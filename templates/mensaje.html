@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar mensaje al Director</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container__cover">
+        <h2>Enviar mensaje al Director</h2>
+
+        <!-- Aquí mostramos los mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('mensaje') }}" method="POST">
+            <label for="nombre">Tu nombre:</label><br>
+            <input type="text" name="nombre" required><br>
+
+            <label for="correo">Tu correo:</label><br>
+            <input type="email" name="correo" required><br>
+
+            <label for="mensaje">Mensaje:</label><br>
+            <textarea name="mensaje" rows="5" required></textarea><br>
+
+            <button type="submit">Enviar</button>
+        </form>
+        <a href="/">Volver al inicio</a>
+    </div>
+</body>
+</html>

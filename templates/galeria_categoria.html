@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Galería - {{ categoria|capitalize }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <h1>Galería de {{ categoria|capitalize }}</h1>
+  <a href="/">Volver al inicio</a>
+  <div style="display: flex; flex-wrap: wrap;">
+    {% for imagen in imagenes %}
+      <div style="margin: 10px;">
+        <img src="{{ url_for('static', filename='galeria/' + categoria + '/' + imagen) }}" width="200">
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

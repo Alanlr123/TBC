@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ver Avisos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container__cover">
+    <div class="avisos">
+    <h1 class="AVI">Avisos para los Alumnos</h1>
+    <ul>
+        {% for aviso in avisos %}
+            <li>{{ aviso }}</li>
+        {% else %}
+            <li>No hay avisos disponibles en este momento.</li>
+        {% endfor %}
+        <a class="button2" href="/">Atras</a>
+    </ul>
+</div>
+</div>
+</body>
+</html>

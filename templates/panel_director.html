@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel del Director</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  
+  <h1>Panel del Director</h1>
+
+  <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+
+  <h2>Subir imagen a una categoría</h2>
+  <form action="{{ url_for('subir_imagen_general') }}" method="POST" enctype="multipart/form-data">
+    <label for="categoria">Selecciona categoría:</label>
+    <select name="categoria" required>
+      {% for categoria in categorias %}
+        <option value="{{ categoria }}">{{ categoria|capitalize }}</option>
+      {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Selecciona imagen:</label>
+    <input type="file" name="imagen" accept="image/*" required>
+
+    <br><br>
+    <button type="submit">Subir</button>
+  </form>
+
+  <!-- Mostrar mensajes flash -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <h2>Imágenes por categoría</h2>
+
+  {% for categoria in categorias %}
+    <h3>{{ categoria|capitalize }}</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+      {% for imagen in imagenes_por_categoria[categoria] %}
+        <div style="border: 1px solid #ccc; padding: 10px; text-align: center;">
+          <img src="{{ url_for('static', filename='galeria/' + categoria + '/' + imagen) }}" alt="{{ imagen }}" width="150"><br>
+          <form action="{{ url_for('eliminar_imagen', categoria=categoria, nombre_imagen=imagen) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta imagen?');">
+            <button type="submit">Eliminar</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+
+  <!-- Panel para subir avisos -->
+  <h2>Agregar Avisos</h2>
+  <form action="{{ url_for('agregar_aviso') }}" method="POST">
+      <input type="text" name="aviso" placeholder="Escribe un nuevo aviso" required>
+      <button type="submit">Agregar</button>
+  </form>
+
+  <h3>Lista de avisos:</h3>
+  <ul>
+    {% for aviso in avisos %}
+      <li>
+        {{ aviso }}
+        <form action="{{ url_for('eliminar_aviso', indice=loop.index0) }}" method="POST" style="display:inline;">
+          <button type="submit">Eliminar</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+
+ 
+    <!-- Nueva sección para mostrar mensajes recibidos -->
+    <h2>Mensajes Recibidos</h2>
+    {% if mensajes %}
+      <ul>
+        {% for mensaje in mensajes %}
+          <li>
+            <form class="mensaje-form" action="{{ url_for('panel_director') }}" method="POST">
+              <input type="hidden" name="mensaje_id" value="{{ mensaje[0] }}">
+              <p>Nombre: {{ mensaje[1] }}</p>
+              <p>Correo: {{ mensaje[2] }}</p>
+              <p>Mensaje: {{ mensaje[3] }}</p>
+              <button type="submit">Eliminar</button>
+            </form>
+            
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No hay mensajes aún.</p>
+    {% endif %}
+  
+</body>
+</html>
