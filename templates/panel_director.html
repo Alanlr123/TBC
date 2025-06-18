@@ -48,7 +48,7 @@
 
   {% for categoria in categorias %}
     <h3>{{ categoria|capitalize }}</h3>
-    <div class="imagenes-categoria">
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
       {% for imagen in imagenes_por_categoria[categoria] %}
         <div style="border: 1px solid #ccc; padding: 10px; text-align: center;">
           <img src="{{ url_for('static', filename='galeria/' + categoria + '/' + imagen) }}" alt="{{ imagen }}" width="150"><br>
