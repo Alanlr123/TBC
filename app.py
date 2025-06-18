@@ -25,12 +25,11 @@ def galeria():
 @app.route('/galeria/<categoria>')
 def galeria_categoria(categoria):
     categoria = categoria.strip()
-    ruta_categoria = os.path.join(app.static_folder, 'img', 'galeria', categoria)
+    ruta_categoria = os.path.join(app.static_folder, 'galeria', categoria)
     if not os.path.exists(ruta_categoria):
         os.makedirs(ruta_categoria)
     imagenes = os.listdir(ruta_categoria)
     return render_template('galeria_categoria.html', imagenes=imagenes, categoria=categoria)
-
 
 @app.route('/login/director', methods=['GET', 'POST'])
 def login_director():
