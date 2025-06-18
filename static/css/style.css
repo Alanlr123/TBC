@@ -296,3 +296,50 @@ header{
   border-radius: 20rem;
   
 }
+
+/**************************************************/
+/* === Responsividad para la parte principal (inicio con fondo y texto) === */
+
+@media screen and (max-width: 1024px) {
+  .text__cover h1 {
+    font-size: 2.5em;
+    text-align: center;
+    padding: 0 1em;
+  }
+
+  .text__cover p {
+    font-size: 1.1em;
+    text-align: center;
+    padding: 0 2em;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container__cover {
+    flex-direction: column;
+    text-align: center;
+    height: auto;
+    padding: 5em 1em;
+    background-attachment: scroll; /* Mejora rendimiento en móviles */
+  }
+
+  .text__cover h1 {
+    font-size: 1.7em;
+  }
+
+  .text__cover p {
+    font-size: 1em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .text__cover h1 {
+    font-size: 1.4em;
+    padding: 0 1em;
+  }
+
+  .text__cover p {
+    font-size: 0.9em;
+    padding: 0 1.5em;
+  }
+}
