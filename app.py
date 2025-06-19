@@ -137,10 +137,33 @@ def subir_imagen_general():
 
     return redirect(url_for('panel_director'))
 
-@app.route('/eliminar-imagen/<categoria>/<nombre_imagen>', methods=['POST'])
-def eliminar_imagen(categoria, nombre_imagen):
-    flash('Funcionalidad de eliminación desde Cloudinary aún no implementada.', 'info')
+
+@app.route('/eliminar-imagen/<categoria>/<public_id>', methods=['POST'])
+def eliminar_imagen(categoria, public_id):
+    import cloudinary.uploader
+    import sqlite3
+
+    try:
+        # Eliminar de Cloudinary
+        cloudinary.uploader.destroy(public_id)
+    except Exception as e:
+        flash(f"Error al eliminar de Cloudinary: {e}", 'error')
+        return redirect(url_for('panel_director'))
+
+    try:
+        # Eliminar de base de datos si llevas registro
+        conn = sqlite3.connect('base.db')
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM imagenes WHERE public_id = ?", (public_id,))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        flash(f"Error al eliminar de la base de datos: {e}", 'error')
+
+    flash("Imagen eliminada correctamente.", 'success')
     return redirect(url_for('panel_director'))
+
+
 
 @app.route('/agregar-aviso', methods=['POST'])
 def agregar_aviso():
