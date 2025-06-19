@@ -2,13 +2,18 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import os
 from werkzeug.utils import secure_filename
 import sqlite3
+import cloudinary
+import cloudinary.uploader
 
 app = Flask(__name__)
 app.secret_key = 'clave_secreta_segura'
 
-UPLOAD_FOLDER = 'static/galeria'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# Configuración de Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv('CLOUD_NAME'),
+    api_key=os.getenv('CLOUD_API_KEY'),
+    api_secret=os.getenv('CLOUD_API_SECRET')
+)
 
 # Categorías disponibles
 CATEGORIAS = ['Eventos Escolares', 'Actividades Deportivas y Culturales', 'Calendario Escolar', 'calificaciones', 'Proyectos Escolares']
@@ -25,11 +30,19 @@ def galeria():
 @app.route('/galeria/<categoria>')
 def galeria_categoria(categoria):
     categoria = categoria.strip()
-    ruta_categoria = os.path.join(app.static_folder, 'galeria', categoria)
-    if not os.path.exists(ruta_categoria):
-        os.makedirs(ruta_categoria)
-    imagenes = os.listdir(ruta_categoria)
+    imagenes = []
+    archivo = f'datos_{categoria}.txt'
+    if os.path.exists(archivo):
+        with open(archivo, 'r', encoding='utf-8') as f:
+            for linea in f:
+                partes = linea.strip().split('|')
+                if len(partes) >= 2:
+                    imagenes.append((partes[0], partes[2] if len(partes) > 2 else ''))  # url, descripcion
+                elif len(partes) == 1:
+                    imagenes.append((partes[0], ''))
     return render_template('galeria_categoria.html', imagenes=imagenes, categoria=categoria)
+
+
 
 @app.route('/login/director', methods=['GET', 'POST'])
 def login_director():
@@ -45,12 +58,12 @@ def login_director():
             return render_template('login_director.html', error=error)
 
     return render_template('login_director.html')
-
 @app.route('/panel/director', methods=['GET', 'POST'])
 def panel_director():
     if not session.get('director_logueado'):
         return redirect(url_for('login_director'))
 
+    # Código para eliminar mensajes (si tienes)
     if request.method == 'POST':
         mensaje_id = request.form.get('mensaje_id')
         if mensaje_id:
@@ -64,11 +77,19 @@ def panel_director():
 
     imagenes_por_categoria = {}
     for categoria in CATEGORIAS:
-        ruta = os.path.join(app.config['UPLOAD_FOLDER'], categoria)
-        os.makedirs(ruta, exist_ok=True)
-        imagenes = os.listdir(ruta)
-        imagenes_por_categoria[categoria] = imagenes
+        urls = []
+        archivo = f'datos_{categoria}.txt'
+        if os.path.exists(archivo):
+            with open(archivo, 'r', encoding='utf-8') as f:
+                for linea in f:
+                    partes = linea.strip().split('|')
+                    if len(partes) == 3:
+                        urls.append((partes[0], partes[1], partes[2]))  # url, public_id, descripcion
+                    elif len(partes) == 2:
+                        urls.append((partes[0], partes[1], ''))
+        imagenes_por_categoria[categoria] = urls
 
+    # Carga mensajes para panel director si tienes esa funcionalidad
     conn = sqlite3.connect('mensajes.db')
     cursor = conn.cursor()
     cursor.execute('SELECT id, nombre, correo, contenido FROM mensajes')
@@ -90,6 +111,7 @@ def subir_imagen_general():
 
     categoria = request.form.get('categoria')
     archivo = request.files.get('imagen')
+    descripcion = request.form.get('descripcion', '').strip().replace('|', '')  # quitamos pipes para no romper el formato
 
     if categoria not in CATEGORIAS:
         flash('Categoría no válida.', 'error')
@@ -99,30 +121,24 @@ def subir_imagen_general():
         flash('No seleccionaste ninguna imagen.', 'error')
         return redirect(url_for('panel_director'))
 
-    filename = secure_filename(archivo.filename)
-    ruta_categoria = os.path.join(app.config['UPLOAD_FOLDER'], categoria)
-    os.makedirs(ruta_categoria, exist_ok=True)
-    archivo.save(os.path.join(ruta_categoria, filename))
+    try:
+        resultado = cloudinary.uploader.upload(archivo, folder=f'galeria/{categoria}')
+        url = resultado['secure_url']
+        public_id = resultado['public_id']
 
-    flash(f'Imagen subida correctamente a {categoria}.', 'success')
+        # Guardamos URL|public_id|descripcion en el archivo txt
+        with open(f'datos_{categoria}.txt', 'a', encoding='utf-8') as f:
+            f.write(f'{url}|{public_id}|{descripcion}\n')
+
+        flash(f'Imagen subida correctamente a {categoria}.', 'success')
+    except Exception as e:
+        flash(f'Error al subir imagen: {e}', 'error')
+
     return redirect(url_for('panel_director'))
 
 @app.route('/eliminar-imagen/<categoria>/<nombre_imagen>', methods=['POST'])
 def eliminar_imagen(categoria, nombre_imagen):
-    if not session.get('director_logueado'):
-        return redirect(url_for('login_director'))
-
-    if categoria not in CATEGORIAS:
-        flash('Categoría no válida', 'error')
-        return redirect(url_for('panel_director'))
-
-    ruta_imagen = os.path.join(app.config['UPLOAD_FOLDER'], categoria, nombre_imagen)
-    if os.path.exists(ruta_imagen):
-        os.remove(ruta_imagen)
-        flash('Imagen eliminada correctamente.', 'success')
-    else:
-        flash('La imagen no existe.', 'error')
-
+    flash('Funcionalidad de eliminación desde Cloudinary aún no implementada.', 'info')
     return redirect(url_for('panel_director'))
 
 @app.route('/agregar-aviso', methods=['POST'])
@@ -217,7 +233,5 @@ def mensaje():
 
     return render_template('mensaje.html', mensaje_enviado=mensaje_enviado)
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
-
