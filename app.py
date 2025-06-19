@@ -9,10 +9,11 @@ app = Flask(__name__)
 app.secret_key = 'clave_secreta_segura'
 
 # Configuración de Cloudinary
+
 cloudinary.config(
-    cloud_name=os.getenv('CLOUD_NAME'),
-    api_key=os.getenv('CLOUD_API_KEY'),
-    api_secret=os.getenv('CLOUD_API_SECRET')
+  cloud_name = "dnfgqlzoq",
+  api_key = "821424853667995",
+  api_secret = "4Zcph-t8j3atCR4XgzfEeNg4cMA"
 )
 
 # Categorías disponibles
