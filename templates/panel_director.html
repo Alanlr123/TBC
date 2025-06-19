@@ -1,3 +1,7 @@
+<h1>Panel del Director</h1>
+
+<a href="{{ url_for('logout') }}">Cerrar sesión</a>
+
 <h2>Subir imagen a una categoría</h2>
 <form action="{{ url_for('subir_imagen_general') }}" method="POST" enctype="multipart/form-data">
   <label for="categoria">Selecciona categoría:</label>
@@ -20,6 +24,49 @@
   <br><br>
   <button type="submit">Subir</button>
 </form>
+
+<hr>
+
+<h2>Agregar aviso</h2>
+<form action="{{ url_for('agregar_aviso') }}" method="POST">
+  <input type="text" name="aviso" placeholder="Nuevo aviso..." required>
+  <button type="submit">Agregar aviso</button>
+</form>
+
+{% if avisos %}
+  <h3>Avisos actuales</h3>
+  <ul>
+    {% for aviso in avisos %}
+      <li>
+        {{ aviso }}
+        <form action="{{ url_for('eliminar_aviso', indice=loop.index0) }}" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('¿Eliminar este aviso?')">Eliminar</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+<hr>
+
+<h2>Mensajes enviados por alumnos</h2>
+{% if mensajes %}
+  <ul>
+    {% for id, nombre, correo, contenido in mensajes %}
+      <li>
+        <strong>{{ nombre }}</strong> ({{ correo }}): {{ contenido }}
+        <form action="{{ url_for('panel_director') }}" method="POST" style="display:inline;">
+          <input type="hidden" name="mensaje_id" value="{{ id }}">
+          <button type="submit" onclick="return confirm('¿Eliminar este mensaje?')">Eliminar</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No hay mensajes.</p>
+{% endif %}
+
+<hr>
 
 <h2>Imágenes por categoría</h2>
 
