@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TBC</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
   <!-- header de menú -->
@@ -20,19 +22,19 @@
       <div class="menu">
         <nav>
           <ul>
-            
+
             <li><a href="{{url_for('ver_avisos')}}">Avisos</a></li>
 
 
             <li class="submenu">
               <a>Eventos</a>
-                <ul class="submenu-list">
-                  <li><a href="{{url_for('paraescolares')}}">Paraescolares</a></li>
-                  <li><a href="{{url_for('ceremonias')}}">Ceremonias</a></li>
-                  <li><a href="{{url_for('aniversario')}}">Aniversario</a></li>
+              <ul class="submenu-list">
+                <li><a href="{{url_for('paraescolares')}}">Paraescolares</a></li>
+                <li><a href="{{url_for('ceremonias')}}">Ceremonias</a></li>
+                <li><a href="{{url_for('aniversario')}}">Aniversario</a></li>
 
-                </ul>
-            
+              </ul>
+
             </li>
 
             <li class="submenu">
@@ -41,7 +43,7 @@
                 <li><a href="{{url_for('tbc')}}">El TBC</a></li>
                 <li><a href="{{url_for('misión')}}">Misión Y Visión</a></li>
                 <li><a href="{{url_for('equipo')}}">Equipo De Trabajo</a></li>
-                <li><a href="{{url_for('mensaje')}}">Mensaje al director</a></li>  
+                <li><a href="{{url_for('mensaje')}}">Mensaje al director</a></li>
 
               </ul>
 
@@ -60,15 +62,20 @@
             <li class="submenu">
               <a>Galería</a>
               <ul class="submenu-list">
-                <li><a href="{{ url_for('galeria_categoria', categoria='eventos escolares') }}">Eventos Escolares</a></li>
-                <li><a href="{{ url_for('galeria_categoria', categoria='calendario Escolar') }}">Calendario Escolar</a></li>
-                <li><a href="{{ url_for('galeria_categoria', categoria='Actividades Deportivas y Culturales') }}">Actividades Deportivas y Culturales</a></li>
-                <li><a href="{{url_for('galeria_categoria',categoria='calificaciones')}}">Calificaciónes</a></li>
-                <li><a href="{{url_for('galeria_categoria',categoria='Proyectos Escolares')}}">Proyectos escolares</a></li>
+                <li><a href="{{ url_for('galeria_categoria', categoria='eventos_escolares') }}">Eventos Escolares</a>
+                </li>
+                <li><a href="{{ url_for('galeria_categoria', categoria='calendario_escolar') }}">Calendario Escolar</a>
+                </li>
+                <li><a href="{{ url_for('galeria_categoria', categoria='actividades_deportivas') }}">Actividades
+                    Deportivas y Culturales</a></li>
+                <li><a href="{{ url_for('galeria_categoria', categoria='calificaciones') }}">Calificaciónes</a></li>
+                <li><a href="{{ url_for('galeria_categoria', categoria='proyectos_escolares') }}">Proyectos
+                    escolares</a></li>
+
               </ul>
             </li>
             <li><a href="{{url_for('login_director')}}">Iniciar Sesión</a></li>
-          
+
           </ul>
         </nav>
 
@@ -89,7 +96,9 @@
       <div class="cover">
         <section class="text__cover">
           <h1>"Formando jóvenes con valores y conocimientos para un mejor futuro."</h1>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta quia eaque, quas fugiat sequi impedit consequatur obcaecati voluptatem consequuntur beatae voluptas qui eligendi enim id velit pariatur quibusdam facilis repellat.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta quia eaque, quas fugiat sequi impedit
+            consequatur obcaecati voluptatem consequuntur beatae voluptas qui eligendi enim id velit pariatur quibusdam
+            facilis repellat.</p>
         </section>
       </div>
     </div>
@@ -166,4 +175,5 @@
   </main>
 
 </body>
+
 </html>
