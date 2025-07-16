@@ -39,15 +39,21 @@ def galeria_categoria(categoria):
     categoria = categoria.strip()
     imagenes = []
     archivo = f'datos_{categoria}.txt'
+    
     if os.path.exists(archivo):
         with open(archivo, 'r', encoding='utf-8') as f:
             for linea in f:
-                partes = linea.strip().split('|')
-                if len(partes) >= 2:
-                    imagenes.append((partes[0], partes[2] if len(partes) > 2 else ''))  # url, descripcion
-                elif len(partes) == 1:
-                    imagenes.append((partes[0], ''))
-        return render_template('galeria_categoria.html', imagenes=imagenes, categoria=categoria, categorias=CATEGORIAS)
+                try:
+                    partes = linea.strip().split('|')
+                    if len(partes) >= 2:
+                        descripcion = partes[2] if len(partes) > 2 else ''
+                        imagenes.append((partes[0], descripcion))
+                    elif len(partes) == 1:
+                        imagenes.append((partes[0], ''))
+                except Exception as e:
+                    print(f"Error procesando línea: {linea} - {e}")
+    
+    return render_template('galeria_categoria.html', imagenes=imagenes, categoria=categoria, categorias=CATEGORIAS)
 
 
 
