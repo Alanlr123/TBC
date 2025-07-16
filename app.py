@@ -47,7 +47,8 @@ def galeria_categoria(categoria):
                     imagenes.append((partes[0], partes[2] if len(partes) > 2 else ''))  # url, descripcion
                 elif len(partes) == 1:
                     imagenes.append((partes[0], ''))
-    return render_template('galeria_categoria.html', imagenes=imagenes, categoria=categoria)
+    return render_template('galeria_categoria.html', imagenes=imagenes, categoria=categoria, categorias=CATEGORIAS)
+
 
 
 
