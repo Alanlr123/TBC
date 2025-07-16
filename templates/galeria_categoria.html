@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
- <h1>Galería de {{ categorias[categoria] }}</h1>
-
+  <title>Galería - {{ categorias[categoria] }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <h1>Galería de {{ categoria|capitalize }}</h1>
+  <h1>Galería de {{ categorias[categoria] }}</h1>
   <a href="/">Volver al inicio</a>
   <div style="display: flex; flex-wrap: wrap; gap: 15px;">
     {% for url, descripcion in imagenes %}
